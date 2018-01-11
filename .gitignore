@@ -101,3 +101,8 @@ ENV/
 .mypy_cache/
 
 calibration/
+
+result/
+camera_params/*
+
+*.bmp

@@ -1,6 +1,8 @@
 import numpy as np
 np.set_printoptions(precision=3)
 
+from preference import *
+
 import cv2
 aruco = cv2.aruco
 
@@ -16,22 +18,18 @@ def showCalibrationResult(calibret):
     print("vector of standard deviations estimated for extrinsic parameters : \n", stdDeviationsExtrinsics)
     print("vector of average re-projection errors : \n", perViewErrors)
 
-# チェッカーボードの生成 #
-parameters = aruco.DetectorParameters_create()
-dictionary = aruco.getPredefinedDictionary(aruco.DICT_5X5_100)
-board = aruco.CharucoBoard_create(5, 8, 0.06, 0.04, dictionary) # squaresX, squaresY, squareLength, markerLength, dictionary
 img = board.draw((200*5, 200*8))
 
 # 全画像をロード #
 # 入力画像 #
 import glob, os
-image_paths = [os.path.basename(r) for r in glob.glob('calibration/*.bmp')]
+image_paths = [os.path.basename(r) for r in glob.glob(calibration_image_path+"*."+image_format)]
 # print(image_paths)
 
 calibImages = []
 
 for image_path in image_paths:
-    path = 'calibration/' + image_path
+    path = calibration_image_path + image_path
     calibImage = cv2.imread(path)
     # print(calibImage)
 
@@ -80,5 +78,5 @@ retval, cameraMatrix, distCoeffs, rvecs, tvecs, stdDeviationsInstrinsics, stdDev
 tmp = [cameraMatrix, distCoeffs, rvecs, tvecs, stdDeviationsInstrinsics, stdDeviationsExtrinsics]
 
 import pickle
-with open('camera_param.pickle', mode='wb') as f:
+with open('camera_param.pkl', mode='wb') as f:
     pickle.dump(tmp, f, protocol=2)
